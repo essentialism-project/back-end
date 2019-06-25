@@ -2,7 +2,10 @@ package com.titrate.essentialism.controllers;
 
 
 import com.titrate.essentialism.models.PersonalValue;
+import com.titrate.essentialism.models.User;
 import com.titrate.essentialism.services.PersonalValueService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +30,8 @@ public class PersonalValuesController
     @Autowired
     PersonalValueService personalValueService;
 
-    @GetMapping(value = "/personalValues",
+    @ApiOperation(value = "Returns a list of all personal values", response = PersonalValue.class)
+    @GetMapping(value = "/personalvalues",
                 produces = {"application/json"})
     public ResponseEntity<?> listAllPersonalValues(HttpServletRequest request)
     {
@@ -64,7 +68,7 @@ public class PersonalValuesController
     }
 
 
-    @PostMapping(value = "/personalValue")
+    @PostMapping(value = "/personalvalue")
     public ResponseEntity<?> addNewPersonalValue(HttpServletRequest request, @Valid
     @RequestBody
             PersonalValue newPersonalValue) throws URISyntaxException
@@ -81,6 +85,18 @@ public class PersonalValuesController
         return new ResponseEntity<>(null, responseHeaders, HttpStatus.CREATED);
     }
 
+//@PutMapping("/personalValue/{id}")
+//public ResponseEntity<?> updatePersonalValue(HttpServletRequest request,
+//                                    @RequestBody
+//                                            User updateValue,
+//                                    @PathVariable
+//                                            long id)
+//{
+//    logger.trace(request.getRequestURI() + " accessed");
+//
+//    personalValueService.update(updateValue, id);
+//    return new ResponseEntity<>(HttpStatus.OK);
+//}
 
     @DeleteMapping("/personalValue/{id}")
     public ResponseEntity<?> deletePersonalValueById(HttpServletRequest request,

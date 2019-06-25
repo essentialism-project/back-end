@@ -12,6 +12,7 @@ public interface PersonalValueService
 
     List<PersonalValue> findByUserName(String username);
 
+
     void delete(long id);
 
     PersonalValue save(PersonalValue quote);

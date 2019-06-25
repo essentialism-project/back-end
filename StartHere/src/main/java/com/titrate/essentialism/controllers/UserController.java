@@ -2,6 +2,7 @@ package com.titrate.essentialism.controllers;
 
 import com.titrate.essentialism.models.User;
 import com.titrate.essentialism.services.UserService;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,18 +66,16 @@ public class UserController
     }
 
 
+    @ApiOperation(value = "Adds a User", response = User.class)
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @PostMapping(value = "/user",
+    @PostMapping(value = "/adduser",
                  consumes = {"application/json"},
                  produces = {"application/json"})
-    public ResponseEntity<?> addNewUser(HttpServletRequest request, @Valid
-    @RequestBody
-            User newuser) throws URISyntaxException
+    public ResponseEntity<?> addNewUser(HttpServletRequest request, @Valid @RequestBody User newuser) throws URISyntaxException
     {
+
         logger.trace(request.getRequestURI() + " accessed");
-
         newuser = userService.save(newuser);
-
         // set the location header for the newly created resource
         HttpHeaders responseHeaders = new HttpHeaders();
         URI newUserURI = ServletUriComponentsBuilder.fromCurrentRequest().path("/{userid}").buildAndExpand(newuser.getUserid()).toUri();

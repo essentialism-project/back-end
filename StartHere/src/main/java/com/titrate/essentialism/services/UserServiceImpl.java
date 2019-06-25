@@ -29,6 +29,7 @@ public class UserServiceImpl implements UserDetailsService, UserService
     @Autowired
     private RoleRepository rolerepos;
 
+
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException
     {
@@ -125,9 +126,14 @@ public class UserServiceImpl implements UserDetailsService, UserService
 
                 if (user.getPersonalvalues().size() > 0)
                 {
-                    for (PersonalValue q : user.getPersonalvalues())
+                    int usersize = user.getPersonalvalues().size();
+                    for (PersonalValue p : user.getPersonalvalues())
                     {
-                        currentUser.getPersonalvalues().add(new PersonalValue(q.getPersonalvalue(), currentUser));
+                        if(user.getPersonalvalues().size()== usersize){
+                            currentUser.getPersonalvalues().clear();
+                            usersize--;
+                        }
+                        currentUser.getPersonalvalues().add(new PersonalValue(p.getPersonalvalue(), currentUser));
                     }
                 }
 
