@@ -22,7 +22,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/personalValues")
+@RequestMapping("/personalvalues")
 public class PersonalValuesController
 {
     private static final Logger logger = LoggerFactory.getLogger(RolesController.class);

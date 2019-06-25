@@ -100,6 +100,7 @@ public class UserServiceImpl implements UserDetailsService, UserService
         {
             if (id == currentUser.getUserid())
             {
+
                 if (user.getUsername() != null)
                 {
                     currentUser.setUsername(user.getUsername());
@@ -124,6 +125,16 @@ public class UserServiceImpl implements UserDetailsService, UserService
                     }
                 }
 
+                if(user.getEmail() != null){
+                    currentUser.setEmail(user.getEmail());
+                }
+                if(user.getFirstname() != null){
+                    currentUser.setFirstname(user.getFirstname());
+                }
+                if(user.getLastname()!= null){
+                    currentUser.setLastname(user.getLastname());
+                }
+
                 if (user.getPersonalvalues().size() > 0)
                 {
                     int usersize = user.getPersonalvalues().size();
@@ -135,7 +146,9 @@ public class UserServiceImpl implements UserDetailsService, UserService
                         }
                         currentUser.getPersonalvalues().add(new PersonalValue(p.getPersonalvalue(), currentUser));
                     }
+
                 }
+
 
                 return userrepos.save(currentUser);
             } else

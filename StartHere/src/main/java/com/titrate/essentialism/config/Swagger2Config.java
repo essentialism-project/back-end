@@ -19,7 +19,7 @@ public class Swagger2Config
     public Docket api()
     {
         return new Docket(DocumentationType.SWAGGER_2)
-                .select().apis(RequestHandlerSelectors.any())
+                .select().apis(RequestHandlerSelectors.basePackage("com.titrate.essentialism"))
                 .paths(PathSelectors.any()).build()
                 .useDefaultResponseMessages(false) // Allows only my exception responses
                 .ignoredParameterTypes(Pageable.class) // allows only my paging parameter list
