@@ -3,6 +3,8 @@ package com.titrate.essentialism.models;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "personalvalues")
@@ -21,6 +23,17 @@ public class PersonalValue extends Auditable
     @JsonIgnoreProperties({"personalvalues", "hibernateLazyInitializer"})
     private User user;
 
+
+    @Column
+    private String description;
+
+//    @OneToMany(mappedBy = "project",cascade = CascadeType.ALL, orphanRemoval = true)
+    @Column
+    private List<String> projects = new ArrayList<>();
+
+
+
+
     public PersonalValue()
     {
     }
@@ -30,6 +43,7 @@ public class PersonalValue extends Auditable
         this.personalvalue = personalvalue;
         this.user = user;
     }
+
 
     public long getPersonalvaluesid()
     {
@@ -60,5 +74,13 @@ public class PersonalValue extends Auditable
     public void setUser(User user)
     {
         this.user = user;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

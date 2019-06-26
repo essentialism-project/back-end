@@ -55,14 +55,13 @@ public class UserController
     }
 
 
-    @GetMapping(value = "/getusername",
+    @GetMapping(value = "/getcurrentuser",
                 produces = {"application/json"})
-    @ResponseBody
-    public ResponseEntity<?> getCurrentUserName(HttpServletRequest request, Authentication authentication)
-    {
-        logger.trace(request.getRequestURI() + " accessed");
 
-        return new ResponseEntity<>(authentication.getPrincipal(), HttpStatus.OK);
+    @ResponseBody
+    public ResponseEntity<?> getCurrentUser(Authentication authentication) {
+        User u = userService.findUserByName(authentication.getName());
+        return new ResponseEntity<>(u, HttpStatus.OK);
     }
 
 

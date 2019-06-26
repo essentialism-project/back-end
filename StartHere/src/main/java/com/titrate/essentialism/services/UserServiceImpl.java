@@ -23,6 +23,7 @@ import java.util.List;
 public class UserServiceImpl implements UserDetailsService, UserService
 {
 
+
     @Autowired
     private UserRepository userrepos;
 
@@ -40,6 +41,11 @@ public class UserServiceImpl implements UserDetailsService, UserService
         }
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), user.getAuthority());
     }
+
+//    @Override
+//    public User findUserByUsername(User u) {
+//        User userInfo = userrepos.findByUsername()
+//    }
 
     public User findUserById(long id) throws ResourceNotFoundException
     {
@@ -88,6 +94,13 @@ public class UserServiceImpl implements UserDetailsService, UserService
         return userrepos.save(newUser);
     }
 
+
+    @Transactional
+    @Override
+    public User findUserByName(String username) {
+        User user = userrepos.findByUsername(username);
+        return user;
+    }
 
     @Transactional
     @Override
@@ -144,6 +157,7 @@ public class UserServiceImpl implements UserDetailsService, UserService
                             currentUser.getPersonalvalues().clear();
                             usersize--;
                         }
+//                        for (ValueGoals p : user.getValuegoals())
                         currentUser.getPersonalvalues().add(new PersonalValue(p.getPersonalvalue(), currentUser));
                     }
 
