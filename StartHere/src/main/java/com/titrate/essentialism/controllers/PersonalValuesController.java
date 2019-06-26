@@ -4,6 +4,7 @@ package com.titrate.essentialism.controllers;
 import com.titrate.essentialism.models.PersonalValue;
 import com.titrate.essentialism.models.User;
 import com.titrate.essentialism.services.PersonalValueService;
+import com.titrate.essentialism.services.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -29,6 +30,9 @@ public class PersonalValuesController
 
     @Autowired
     PersonalValueService personalValueService;
+
+    @Autowired
+    UserService userService;
 
     @ApiOperation(value = "Returns a list of all personal values", response = PersonalValue.class)
     @GetMapping(value = "/personalvalues",
@@ -66,24 +70,19 @@ public class PersonalValuesController
         List<PersonalValue> thePersonalValues = personalValueService.findByUserName(userName);
         return new ResponseEntity<>(thePersonalValues, HttpStatus.OK);
     }
-
-
-    @PostMapping(value = "/personalvalue")
-    public ResponseEntity<?> addNewPersonalValue(HttpServletRequest request, @Valid
-    @RequestBody
-            PersonalValue newPersonalValue) throws URISyntaxException
-    {
-        logger.trace(request.getRequestURI() + " accessed");
-
-        newPersonalValue = personalValueService.save(newPersonalValue);
-
-        // set the location header for the newly created resource
-        HttpHeaders responseHeaders = new HttpHeaders();
-        URI newPersonalValueURI = ServletUriComponentsBuilder.fromCurrentRequest().path("/{personalValueid}").buildAndExpand(newPersonalValue.getPersonalvaluesid()).toUri();
-        responseHeaders.setLocation(newPersonalValueURI);
-
-        return new ResponseEntity<>(null, responseHeaders, HttpStatus.CREATED);
-    }
+//
+//
+//    @PutMapping(value = "/users/{userid}/values/{valueIndex}/")
+//    public ResponseEntity<?> updateUsersPersonalvalue(@Valid @RequestBody PersonalValue jsonPersonalValue,
+//    @PathVariable long userid, @PathVariable int valueIndex){
+//    User currentUser = userService.findUserById(userid);
+//        for (int i = 0; i < currentUser.getPersonalvalues().size(); i++) {
+//                if(i == valueIndex){
+//                    currentUser.getPersonalvalues().set(valueIndex,jsonPersonalValue);
+//                }
+//        }
+//    return new ResponseEntity<>(HttpStatus.OK);
+//        }
 
 //@PutMapping("/personalValue/{id}")
 //public ResponseEntity<?> updatePersonalValue(HttpServletRequest request,
