@@ -15,7 +15,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,8 +30,6 @@ public class UserServiceImpl implements UserDetailsService, UserService
     @Autowired
     private RoleRepository rolerepos;
 
-    @Autowired
-    private PersonalValueService personalValueService;
 
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException
@@ -151,20 +148,17 @@ public class UserServiceImpl implements UserDetailsService, UserService
                     currentUser.setLastname(user.getLastname());
                 }
 
-                if(user.getPersonalvalues().size() > 3){
-                    throw new IllegalArgumentException();
-                }
-                if (user.getPersonalvalues().size() > 0 && user.getPersonalvalues().size() <= 3)
+                if (user.getPersonalvalues().size() > 0)
                 {
-
+                    int usersize = user.getPersonalvalues().size();
                     for (PersonalValue p : user.getPersonalvalues())
                     {
-                        PersonalValue pv = personalValueService.findPersonalValueById(p.getPersonalvaluesid());
-                        if(pv.getUser().getUserid() !=currentUser.getUserid()){
-                            throw new IllegalArgumentException();
+                        if(user.getPersonalvalues().size()== usersize){
+                            currentUser.getPersonalvalues().clear();
+                            usersize--;
                         }
-
-                      personalValueService.updateById( p, p.getPersonalvaluesid());
+//                        for (ValueGoals p : user.getValuegoals())
+                        currentUser.getPersonalvalues().add(new PersonalValue(p.getPersonalvalue(), currentUser));
                     }
 
                 }
