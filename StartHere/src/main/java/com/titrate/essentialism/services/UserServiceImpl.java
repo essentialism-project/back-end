@@ -157,8 +157,12 @@ public class UserServiceImpl implements UserDetailsService, UserService
                             currentUser.getPersonalvalues().clear();
                             usersize--;
                         }
-//                        for (ValueGoals p : user.getValuegoals())
-                        currentUser.getPersonalvalues().add(new PersonalValue(p.getPersonalvalue(), currentUser));
+                       PersonalValue valueWithDescritpion =  new PersonalValue(p.getPersonalvalue(), currentUser);
+                        int valueIndex = user.getPersonalvalues().indexOf(p.getPersonalvalue());
+                        valueWithDescritpion.setDescription(user.getPersonalvalues().get(valueIndex).getDescription());
+                        //personal value will have to have a service that updates the description inside of each value
+                        currentUser.getPersonalvalues().add(valueWithDescritpion);
+
                     }
 
                 }
