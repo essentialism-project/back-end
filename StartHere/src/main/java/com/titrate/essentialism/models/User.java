@@ -81,6 +81,9 @@ public class User extends Auditable
      */
     public User()
     {
+        this.personalvalues.add(new PersonalValue("",this));
+        this.personalvalues.add(new PersonalValue("", this));
+        this.personalvalues.add(new PersonalValue("",this));
     }
 
 
@@ -93,6 +96,11 @@ public class User extends Auditable
             ur.setUser(this);
         }
         this.userRoles = userRoles;
+
+        this.personalvalues.add(new PersonalValue("",this));
+        this.personalvalues.add(new PersonalValue("",this));
+        this.personalvalues.add(new PersonalValue("",this));
+
     }
 
     public long getUserid()

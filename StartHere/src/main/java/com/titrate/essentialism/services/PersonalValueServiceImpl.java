@@ -2,6 +2,7 @@ package com.titrate.essentialism.services;
 
 import com.titrate.essentialism.exceptions.ResourceNotFoundException;
 import com.titrate.essentialism.models.PersonalValue;
+import com.titrate.essentialism.models.Project;
 import com.titrate.essentialism.repository.PersonalValueRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -79,9 +80,13 @@ public class PersonalValueServiceImpl implements PersonalValueService
         if(value.getDescription() != null){
             currentValue.setDescription(value.getDescription());
         }
-        if(value.getProjects().size() != 0){
-            currentValue.getProjects().addAll(value.getProjects());
+        System.out.println(value.getProjects());
+        if(value.getProjects().size() > 0){
+            currentValue.getProjects().clear();
+            for (Project p : value.getProjects()){
+                currentValue.getProjects().add( new Project(p.getProjectname(), currentValue));
+            }
         }
-        return value;
+        return currentValue;
     }
 }

@@ -89,10 +89,10 @@ public class UserServiceImpl implements UserDetailsService, UserService
         }
         newUser.setUserRoles(newRoles);
 
-        for (PersonalValue q : user.getPersonalvalues())
-        {
-            newUser.getPersonalvalues().add(new PersonalValue(q.getPersonalvalue(), newUser));
-        }
+//        for (PersonalValue q : user.getPersonalvalues())
+//        {
+//            newUser.getPersonalvalues().add(new PersonalValue(q.getPersonalvalue(), newUser));
+//        }
 
         return userrepos.save(newUser);
     }
@@ -151,10 +151,10 @@ public class UserServiceImpl implements UserDetailsService, UserService
                     currentUser.setLastname(user.getLastname());
                 }
 
-                if(user.getPersonalvalues().size() > 3){
+                if(user.getPersonalvalues().size() > 4){
                     throw new IllegalArgumentException();
                 }
-                if (user.getPersonalvalues().size() > 0 && user.getPersonalvalues().size() <= 3)
+                if (user.getPersonalvalues().size() > 0 || user.getPersonalvalues().size() <= 3)
                 {
 
                     for (PersonalValue p : user.getPersonalvalues())
@@ -163,6 +163,7 @@ public class UserServiceImpl implements UserDetailsService, UserService
                         if(pv.getUser().getUserid() !=currentUser.getUserid()){
                             throw new IllegalArgumentException();
                         }
+
 
                       personalValueService.updateById( p, p.getPersonalvaluesid());
                     }

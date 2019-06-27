@@ -27,20 +27,12 @@ public class PersonalValue extends Auditable
 
 
     @Column
-    private String description;
+    private String description = "";
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "projects")
-//    @JsonIgnoreProperties({"projects"})
-//    private String project;
-//
-//    @OneToMany(mappedBy = "personalvalue",
-//            cascade = CascadeType.ALL,
-//            orphanRemoval = true)
-//    @JsonIgnoreProperties("personalvalue")
 
-    @Column
-    private ArrayList<String> projects;
+    @OneToMany(mappedBy = "personalvalue", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties({"personalvalue"})
+    private List<Project> projects = new ArrayList<>();
 
 
     public PersonalValue()
@@ -92,11 +84,11 @@ public class PersonalValue extends Auditable
     public void setDescription(String description) {
         this.description = description;
     }
-    public ArrayList<String> getProjects() {
+    public List<Project> getProjects() {
         return projects;
     }
 
-    public void setProjects(ArrayList<String> projects) {
+    public void setProjects(List<Project> projects) {
         this.projects = projects;
     }
 
