@@ -29,7 +29,7 @@ public class UserController
     @Autowired
     private UserService userService;
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+
     @GetMapping(value = "/users",
                 produces = {"application/json"})
     public ResponseEntity<?> listAllUsers(HttpServletRequest request)
@@ -57,31 +57,12 @@ public class UserController
 
     @GetMapping(value = "/getcurrentuser",
                 produces = {"application/json"})
-
     @ResponseBody
     public ResponseEntity<?> getCurrentUser(Authentication authentication) {
         User u = userService.findUserByName(authentication.getName());
         return new ResponseEntity<>(u, HttpStatus.OK);
     }
 
-
-    @ApiOperation(value = "Adds a User", response = User.class)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @PostMapping(value = "/adduser",
-                 consumes = {"application/json"},
-                 produces = {"application/json"})
-    public ResponseEntity<?> addNewUser(HttpServletRequest request, @Valid @RequestBody User newuser) throws URISyntaxException
-    {
-
-        logger.trace(request.getRequestURI() + " accessed");
-        newuser = userService.save(newuser);
-        // set the location header for the newly created resource
-        HttpHeaders responseHeaders = new HttpHeaders();
-        URI newUserURI = ServletUriComponentsBuilder.fromCurrentRequest().path("/{userid}").buildAndExpand(newuser.getUserid()).toUri();
-        responseHeaders.setLocation(newUserURI);
-
-        return new ResponseEntity<>(null, responseHeaders, HttpStatus.CREATED);
-    }
 
 
     @PutMapping(value = "/user/{id}")
@@ -98,7 +79,7 @@ public class UserController
     }
 
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+
     @DeleteMapping("/user/{id}")
     public ResponseEntity<?> deleteUserById(HttpServletRequest request,
                                             @PathVariable
@@ -109,4 +90,5 @@ public class UserController
         userService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
 }

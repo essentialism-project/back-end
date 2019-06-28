@@ -2,6 +2,7 @@ package com.titrate.essentialism.services;
 
 import com.titrate.essentialism.exceptions.ResourceNotFoundException;
 import com.titrate.essentialism.models.PersonalValue;
+import com.titrate.essentialism.models.Project;
 import com.titrate.essentialism.repository.PersonalValueRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -9,6 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,31 +18,31 @@ import java.util.List;
 public class PersonalValueServiceImpl implements PersonalValueService
 {
     @Autowired
-    private PersonalValueRepository quoterepos;
+    private PersonalValueRepository personalValueService;
 
     @Override
     public List<PersonalValue> findAll()
     {
         List<PersonalValue> list = new ArrayList<>();
-        quoterepos.findAll().iterator().forEachRemaining(list::add);
+        personalValueService.findAll().iterator().forEachRemaining(list::add);
         return list;
     }
 
     @Override
     public PersonalValue findPersonalValueById(long id)
     {
-        return quoterepos.findById(id).orElseThrow(() -> new ResourceNotFoundException(Long.toString(id)));
+        return personalValueService.findById(id).orElseThrow(() -> new ResourceNotFoundException(Long.toString(id)));
     }
 
     @Override
     public void delete(long id)
     {
-        if (quoterepos.findById(id).isPresent())
+        if (personalValueService.findById(id).isPresent())
         {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if (quoterepos.findById(id).get().getUser().getUsername().equalsIgnoreCase(authentication.getName()))
+            if (personalValueService.findById(id).get().getUser().getUsername().equalsIgnoreCase(authentication.getName()))
             {
-                quoterepos.deleteById(id);
+                personalValueService.deleteById(id);
             } else
             {
                 throw new ResourceNotFoundException(id + " " + authentication.getName());
@@ -53,18 +55,38 @@ public class PersonalValueServiceImpl implements PersonalValueService
 
     @Transactional
     @Override
-    public PersonalValue save(PersonalValue quote)
+    public PersonalValue save(PersonalValue value)
     {
-        return quoterepos.save(quote);
+        return personalValueService.save(value);
     }
 
     @Override
     public List<PersonalValue> findByUserName(String username)
     {
         List<PersonalValue> list = new ArrayList<>();
-        quoterepos.findAll().iterator().forEachRemaining(list::add);
+        personalValueService.findAll().iterator().forEachRemaining(list::add);
 
         list.removeIf(q -> !q.getUser().getUsername().equalsIgnoreCase(username));
         return list;
+    }
+
+    @Transactional
+    @Override
+    public PersonalValue updateById(PersonalValue value, Long id) {
+        PersonalValue currentValue = personalValueService.findById(id).orElseThrow(() -> new EntityNotFoundException());
+        if(value.getPersonalvalue() != null){
+        currentValue.setPersonalvalue(value.getPersonalvalue());
+        }
+        if(value.getDescription() != null){
+            currentValue.setDescription(value.getDescription());
+        }
+        System.out.println(value.getProjects());
+        if(value.getProjects().size() > 0){
+            currentValue.getProjects().clear();
+            for (Project p : value.getProjects()){
+                currentValue.getProjects().add( new Project(p.getProjectname(), currentValue));
+            }
+        }
+        return currentValue;
     }
 }

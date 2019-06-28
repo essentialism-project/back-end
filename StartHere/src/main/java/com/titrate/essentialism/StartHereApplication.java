@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @EnableWebMvc
-@EnableJpaAuditing
+//@EnableJpaAuditing
 @SpringBootApplication
 @EnableSwagger2
 public class StartHereApplication

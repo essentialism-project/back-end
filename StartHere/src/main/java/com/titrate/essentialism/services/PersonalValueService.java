@@ -16,4 +16,6 @@ public interface PersonalValueService
     void delete(long id);
 
     PersonalValue save(PersonalValue quote);
+
+    PersonalValue updateById(PersonalValue value, Long id);
 }

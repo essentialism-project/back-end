@@ -1,10 +1,12 @@
 package com.titrate.essentialism.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+//import java.util.List;
 
 @Entity
 @Table(name = "personalvalues")
@@ -25,13 +27,12 @@ public class PersonalValue extends Auditable
 
 
     @Column
-    private String description;
-
-//    @OneToMany(mappedBy = "project",cascade = CascadeType.ALL, orphanRemoval = true)
-    @Column
-    private List<String> projects = new ArrayList<>();
+    private String description = "";
 
 
+    @OneToMany(mappedBy = "personalvalue", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties({"personalvalue"})
+    private List<Project> projects = new ArrayList<>();
 
 
     public PersonalValue()
@@ -83,4 +84,12 @@ public class PersonalValue extends Auditable
     public void setDescription(String description) {
         this.description = description;
     }
+    public List<Project> getProjects() {
+        return projects;
+    }
+
+    public void setProjects(List<Project> projects) {
+        this.projects = projects;
+    }
+
 }

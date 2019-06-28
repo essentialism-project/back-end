@@ -2,7 +2,6 @@ package com.titrate.essentialism.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -82,6 +81,9 @@ public class User extends Auditable
      */
     public User()
     {
+        this.personalvalues.add(new PersonalValue("",this));
+        this.personalvalues.add(new PersonalValue("", this));
+        this.personalvalues.add(new PersonalValue("",this));
     }
 
 
@@ -94,6 +96,11 @@ public class User extends Auditable
             ur.setUser(this);
         }
         this.userRoles = userRoles;
+
+        this.personalvalues.add(new PersonalValue("",this));
+        this.personalvalues.add(new PersonalValue("",this));
+        this.personalvalues.add(new PersonalValue("",this));
+
     }
 
     public long getUserid()
