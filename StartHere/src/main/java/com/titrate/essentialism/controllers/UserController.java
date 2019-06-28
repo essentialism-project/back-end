@@ -57,7 +57,6 @@ public class UserController
 
     @GetMapping(value = "/getcurrentuser",
                 produces = {"application/json"})
-
     @ResponseBody
     public ResponseEntity<?> getCurrentUser(Authentication authentication) {
         User u = userService.findUserByName(authentication.getName());
