@@ -58,9 +58,18 @@ public class UserServiceImplTest {
 
     @Test
     public void findUserByName() {
+        assertEquals("admin", userService.findUserByName("admin"));
     }
 
     @Test
     public void update() {
+        ArrayList<UserRoles> thisPay = new ArrayList<>();
+        User r1 = new User("ruben","password",
+                thisPay);
+        r1.setUserid(24);
+
+        User updatedR1 = userService.update(r1, 24);
+
+        assertEquals("ruben", updatedR1.getUsername());
     }
 }
