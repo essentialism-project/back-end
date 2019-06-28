@@ -1,5 +1,6 @@
 package com.titrate.essentialism.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.titrate.essentialism.models.PersonalValue;
 import com.titrate.essentialism.models.Role;
 import com.titrate.essentialism.models.User;
@@ -12,6 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -33,7 +35,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @RunWith(SpringRunner.class)
 @WebMvcTest(value = UserController.class, secure = false)
 public class UserControllerTest {
-//
+
+
 
     @MockBean
     UserService userService;
@@ -46,17 +49,18 @@ public class UserControllerTest {
     MockMvc mockMvc;
 
     List<User> userList;
+
     @Before
     public void setUp() throws Exception {
+//        userList = new ArrayList<>();
+////        userList.addAll(userService.findAll());
+////        System.out.println(userList);
         userList = new ArrayList<>();
-
         Role r1 = new Role("admin");
         Role r2 = new Role("user");
         Role r3 = new Role("data");
 
-        roleService.save(r1);
-        roleService.save(r2);
-        roleService.save(r3);
+
 
         // admin, data, user
         ArrayList<UserRoles> admins = new ArrayList<>();
@@ -66,14 +70,14 @@ public class UserControllerTest {
         User u1 = new User("admin", "password", admins);
         u1.getPersonalvalues().add(new PersonalValue("Relationships With Friends and Family", u1));
         u1.getPersonalvalues().add(new PersonalValue("Independence", u1));
-        userService.save(u1);
+
 
         // data, user
         ArrayList<UserRoles> datas = new ArrayList<>();
         datas.add(new UserRoles(new User(), r3));
         datas.add(new UserRoles(new User(), r2));
         User u2 = new User("cinnamon", "1234567", datas);
-        userService.save(u2);
+
 
         // user
         ArrayList<UserRoles> users = new ArrayList<>();
@@ -82,17 +86,24 @@ public class UserControllerTest {
         u3.getPersonalvalues().add(new PersonalValue("Live long and prosper", u3));
         u3.getPersonalvalues().add(new PersonalValue("Moral Principles", u3));
         u3.getPersonalvalues().add(new PersonalValue("Creativity", u3));
-        userService.save(u3);
+
 
         users = new ArrayList<>();
         users.add(new UserRoles(new User(), r2));
         User u4 = new User("Bob", "password", users);
-        userService.save(u4);
+
 
         users = new ArrayList<>();
         users.add(new UserRoles(new User(), r2));
         User u5 = new User("Jane", "password", users);
-        userService.save(u5);
+
+
+        userList.add(u1);
+        userList.add(u2);
+        userList.add(u3);
+        userList.add(u4);
+        userList.add(u5);
+
     }
 
     @After
@@ -100,7 +111,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void listAllUsers() {
+    public void listAllUsers() throws Exception{
         String apiUrl = "/users/users";
 
         Mockito.when(userService.findAll()).thenReturn(userList);
@@ -111,29 +122,75 @@ public class UserControllerTest {
         String tr = r.getResponse().getContentAsString();
 
         ObjectMapper mapper = new ObjectMapper();
-        String er = mapper.writeValueAsString(restaurantList);
+        String er = mapper.writeValueAsString(userList);
+
+        assertEquals("Rest API Returns List", er, tr);
+    }
+
+
+    @Test
+    public void getUser() throws Exception{
+
+        String apiUrl = "/users/user/4";
+//    User currentUser = userService.findUserById(4);
+        Mockito.when(userService.findUserById(4)).thenReturn(userList.get(1));
+
+        RequestBuilder rb = MockMvcRequestBuilders.get(apiUrl).accept(MediaType.APPLICATION_JSON);
+
+        // the following actually performs a real controller call
+        MvcResult r = mockMvc.perform(rb).andReturn(); // this could throw an exception
+        String tr = r.getResponse().getContentAsString();
+
+        ObjectMapper mapper = new ObjectMapper();
+        String er = mapper.writeValueAsString(userList.get(1));
 
         assertEquals("Rest API Returns List", er, tr);
     }
 
     @Test
-    public void getUser() {
+    public void getCurrentUser() throws Exception {
+//        User@72168258
+        String apiUrl = "/users/getcurrentuser";
+        Mockito.when(userService.findUserByName("barnbarn")).thenReturn(userList.get(2));
+//        System.out.println(userService.findUserByName("admin").getUsername());
+//        System.out.println(userList.get(0).getUsername());
+        RequestBuilder rb = MockMvcRequestBuilders.get(apiUrl).accept(MediaType.APPLICATION_JSON);
+
+        // the following actually performs a real controller call
+        MvcResult r = mockMvc.perform(rb).andReturn(); // this could throw an exception
+        String tr = r.getResponse().getContentAsString();
+
+        ObjectMapper mapper = new ObjectMapper();
+        String er = mapper.writeValueAsString(userList.get(2));
+
+        assertEquals("Rest API Returns List", er, tr);
+    }
+
+
+
+    @Test
+    public void updateUser() throws Exception{
+        String apiUrl = "/users/user/{userid}";
+        ArrayList<UserRoles> thisPay = new ArrayList<>();
+        User r1 = new User("ruben", "ruben",thisPay);
+        r1.setUserid(10);
+
+        Mockito.when(userService.update(r1, 10L)).thenReturn(r1);
+        ObjectMapper mapper = new ObjectMapper();
+        String restaurantString = mapper.writeValueAsString(r1);
+
+        RequestBuilder rb = MockMvcRequestBuilders.put(apiUrl, 10L)
+                .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
+                .content(restaurantString);
+
+        mockMvc.perform(rb).andExpect(status().isOk()).andDo(MockMvcResultHandlers.print());
     }
 
     @Test
-    public void getCurrentUser() {
-    }
+    public void deleteUserById() throws Exception{
+        String apiUrl = "/users/user/{userid}";
 
-    @Test
-    public void addNewUser() {
-
-    }
-
-    @Test
-    public void updateUser() {
-    }
-
-    @Test
-    public void deleteUserById() {
+        RequestBuilder rb = MockMvcRequestBuilders.delete(apiUrl, "12").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON);
+        mockMvc.perform(rb).andExpect(status().isOk()).andDo(MockMvcResultHandlers.print());
     }
 }
