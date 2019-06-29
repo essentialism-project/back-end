@@ -46,27 +46,41 @@ public class UserControllerIntegrationTest {
     public void listAllUsers() throws Exception{
         ArrayList<UserRoles> thisPay = new ArrayList<>();
         User r3 = new User("notadmin", "password", thisPay);
-
-
         ObjectMapper mapper = new ObjectMapper();
         String stringR3 = mapper.writeValueAsString(r3);
 
-        given().contentType("application/json").body(stringR3).when().post("/users/users").then().statusCode(201);
+        given().contentType("application/json").body(stringR3).when().post("/users/users").then().statusCode(401);
     }
 
     @Test
     public void getUser() {
+        long aUser = 4L;
+        given().when().get("/users/user/" + aUser).then().statusCode(401).and().body(containsString("admin"));
     }
+
+//    Uses Authentication, therefore not currently testable
+//    @Test
+//    public void getCurrentUser() {
+//    }
 
     @Test
-    public void getCurrentUser() {
+    public void updateUser() throws Exception{
+        ArrayList<UserRoles> thisPay = new ArrayList<>();
+        User r1 = new User("ruben",
+                "ruben",
+                thisPay);
+        r1.setUserid(10);
+
+        ObjectMapper mapper = new ObjectMapper();
+        String stringR1 = mapper.writeValueAsString(r1);
+
+        given().contentType("application/json").body(stringR1).when().put("/users/user/10").then().statusCode(401);
     }
 
-    @Test
-    public void updateUser() {
-    }
-
+    //Authentication prevents me from actually deleting a user, so error is expected
     @Test
     public void deleteUserById() {
+        long aUser = 12L;
+        given().when().get("/users/user/" + aUser).then().statusCode(401).and().body(containsString("error"));
     }
 }
